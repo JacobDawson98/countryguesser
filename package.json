@@ -19,10 +19,11 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --watchAll=false",
     "lint": "eslint --ext .ts,.tsx",
     "compile": "tsc --build",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "review": "yarn lint && yarn compile && yarn test"
   },
   "eslintConfig": {
     "extends": [
