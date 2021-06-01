@@ -3,4 +3,28 @@ name: CD
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
   
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      DEPLOY_DIRECTORY: terraform/www/
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+      - uses: hashicorp/setup-terraform@v1
+        with:
+          node-version: '14'
+      - name: Install dependencies
+        run: yarn Install
+      - name: Build
+        run: yarn Build
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+      - name: Deploy
+        run: cd $DEPLOY_DIRECTORY
+        PLAN=$(mktemp);
+        $(echo terraform plan -out=$PLAN)
+        terraform apply -auto-approve $PLAN
