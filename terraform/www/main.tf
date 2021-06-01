@@ -5,8 +5,13 @@ terraform {
       version = "~>3.42.0"
     }
   }
+  backend "s3" {
+    bucket = "countryguesser-terraform"
+    key = "${var.environment}/terraform.tfstate"
+    region = var.region
+  }
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = var.region
 }
