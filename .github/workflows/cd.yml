@@ -23,9 +23,9 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: us-east-1
       - name: Install dependencies
-        run: yarn Install
+        run: yarn install
       - name: Build
-        run: yarn Build
+        run: yarn build
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check
