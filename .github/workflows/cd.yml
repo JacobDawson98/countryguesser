@@ -32,6 +32,7 @@ jobs:
       - name: Deploy
         run: |
           cd $DEPLOY_DIRECTORY
+          terraform init -input=false
           PLAN="$(mktemp)"
           $(echo terraform plan -out=$PLAN -var="environment=prod" -var="domain_name=countryguesser.com" -var="bucket_name=countryguesser.com")
           terraform apply -auto-approve $PLAN
