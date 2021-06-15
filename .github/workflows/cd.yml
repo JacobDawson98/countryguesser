@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TERRAFORM_DIRECTORY: terraform/www/
-      BUILD_DIRECTORY: ../../build
+      BUILD_DIRECTORY: build
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
