@@ -11,7 +11,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      CLOUDFORMATION_DIRECTORY: build
+      BUILD_DIRECTORY: build
+      CLOUDFORMATION_DIRECTORY: cloudformation
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
