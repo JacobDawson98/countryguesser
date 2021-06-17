@@ -23,9 +23,10 @@ jobs:
         run: yarn build
       - name: Deploy
         run: |
+          cd $CLOUDFORMATION_DIRECTORY
           aws cloudformation deploy \
           --stack-name countryguesser-static-website \
-          --template-file $CLOUDFORMATION_DIRECTORY/s3.yaml \
+          --template-file s3.yaml \
           --parameter-overrides BucketName=countryguesser-static-website
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
