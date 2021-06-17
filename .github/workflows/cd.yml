@@ -24,6 +24,7 @@ jobs:
       - name: Deploy
         run: |
           cd $CLOUDFORMATION_DIRECTORY
+          ls -a
           aws cloudformation deploy \
           --stack-name countryguesser-static-website \
           --template-file s3.yaml \
