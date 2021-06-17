@@ -11,37 +11,22 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      TERRAFORM_DIRECTORY: terraform/www/
-      BUILD_DIRECTORY: build
+      CLOUDFORMATION_DIRECTORY: build
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
-      - uses: hashicorp/setup-terraform@v1
         with:
           node-version: '14'
       - name: Install dependencies
         run: yarn install
       - name: Build
         run: yarn build
-      - name: Terraform Format
-        id: fmt
-        run: terraform fmt -check
-      - name: Plan and apply
-        run: |
-          cd $TERRAFORM_DIRECTORY
-          terraform init -input=false
-          PLAN="$(mktemp)"
-          $(echo terraform plan -out=$PLAN -var="environment=prod" -var="domain_name=countryguesser.com" -var="bucket_name=countryguesser.com")
-          terraform apply -auto-approve $PLAN
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
       - name: Deploy
         run: |
-          cd $BUILD_DIRECTORY
-          aws s3 sync . s3://www.countryguesser.com
-          aws s3 sync . s3://countryguesser.com
+          aws cloudformation deploy \
+          --stack-name countryguesser-static-website \
+          --template-file $CLOUDFORMATION_DIRECTORY/s3.yaml \
+          --parameter-overrides BucketName=countryguesser-static-website
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
