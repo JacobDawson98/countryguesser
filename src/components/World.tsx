@@ -1,4 +1,4 @@
-import WorldSvg from './world.svg';
+import WorldSvg from '../assets/world.svg';
 
 function World() {
   return (
