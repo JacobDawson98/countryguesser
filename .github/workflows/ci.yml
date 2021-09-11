@@ -22,5 +22,7 @@ jobs:
         run: yarn lint 
       - name: Compile
         run: yarn compile
+      - name: Build
+        run: yarn build
       - name: Test
         run: yarn test --coverage
