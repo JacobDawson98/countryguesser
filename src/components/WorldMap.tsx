@@ -29,7 +29,12 @@ function WorldMap() {
   }
 
   return (
-    <div data-testid="worldMap">
+    <div
+      data-testid="worldMap"
+      style={{
+        backgroundColor: colors[preferences.visualMode].seaColor,
+      }}
+    >
       <ComposableMap>
         <ZoomableGroup zoom={1}>
           <Geographies geography={WorldGeography}>
