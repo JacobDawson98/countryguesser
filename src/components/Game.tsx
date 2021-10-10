@@ -15,9 +15,11 @@ export const mapsToGeography: Record<
 
 function Game() {
   const [mapSelection] = useState<Maps>(Maps.WorldMap);
+  // const [countryToFind, setCountryToFind] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState("");
   return (
     <div>
-      <Map geography={mapsToGeography[mapSelection]} />
+      <Map geography={mapsToGeography[mapSelection]} selectedCountry={selectedCountry} setSelectedCountry={(rsmKey: string) => setSelectedCountry(rsmKey)} />
     </div>
   );
 }

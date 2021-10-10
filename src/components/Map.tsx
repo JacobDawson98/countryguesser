@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   ComposableMap,
   Geographies,
@@ -10,6 +9,8 @@ import { preferences } from "../common/constants/globals";
 
 interface WorldMapProps {
   geography: string | Record<string, any> | string[] | undefined;
+  selectedCountry: string;
+  setSelectedCountry: (rsmKey: string) => void;
 }
 
 function getGeographyTestId(rsmKey: string): string {
@@ -17,16 +18,14 @@ function getGeographyTestId(rsmKey: string): string {
 }
 
 function Map(props: WorldMapProps) {
-  const [selectedCountry, setSelectedCountry] = useState("");
-
   function getGeographyFill(rsmKey: string): string {
-    return selectedCountry === rsmKey
+    return props.selectedCountry === rsmKey
       ? colors[preferences.visualMode].countryPressedFill
       : colors[preferences.visualMode].countryDefaultFill;
   }
 
   function getGeographyHoverFill(rsmKey: string): string {
-    return selectedCountry === rsmKey
+    return props.selectedCountry === rsmKey
       ? colors[preferences.visualMode].countryPressedFill
       : colors[preferences.visualMode].countryHoverFill;
   }
@@ -50,7 +49,7 @@ function Map(props: WorldMapProps) {
                   fill={getGeographyFill(geography.rsmKey)}
                   stroke={colors[preferences.visualMode].countryOutline}
                   strokeWidth="0.3"
-                  onClick={() => setSelectedCountry(geography.rsmKey)}
+                  onClick={() => props.setSelectedCountry(geography.rsmKey)}
                   style={{
                     default: {
                       outline: "none",
