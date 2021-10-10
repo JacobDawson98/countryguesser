@@ -10,7 +10,7 @@ import { preferences } from "../common/constants/globals";
 interface WorldMapProps {
   geography: string | Record<string, any> | string[] | undefined;
   selectedCountry: string;
-  setSelectedCountry: (rsmKey: string) => void;
+  setSelectedCountryRsmKey: (rsmKey: string) => void;
 }
 
 function getGeographyTestId(rsmKey: string): string {
@@ -49,7 +49,7 @@ function Map(props: WorldMapProps) {
                   fill={getGeographyFill(geography.rsmKey)}
                   stroke={colors[preferences.visualMode].countryOutline}
                   strokeWidth="0.3"
-                  onClick={() => props.setSelectedCountry(geography.rsmKey)}
+                  onClick={() => props.setSelectedCountryRsmKey(geography.rsmKey)}
                   style={{
                     default: {
                       outline: "none",
