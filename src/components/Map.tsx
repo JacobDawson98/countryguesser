@@ -1,5 +1,4 @@
 import { useState } from "react";
-import WorldGeography from "../assets/world-110m.json";
 import {
   ComposableMap,
   Geographies,
@@ -9,11 +8,15 @@ import {
 import { colors } from "../common/constants/colors";
 import { preferences } from "../common/constants/globals";
 
+interface WorldMapProps {
+  geography: string | Record<string, any> | string[] | undefined;
+}
+
 function getGeographyTestId(rsmKey: string): string {
   return `country-${rsmKey}`;
 }
 
-function WorldMap() {
+function Map(props: WorldMapProps) {
   const [selectedCountry, setSelectedCountry] = useState("");
 
   function getGeographyFill(rsmKey: string): string {
@@ -30,14 +33,14 @@ function WorldMap() {
 
   return (
     <div
-      data-testid="worldMap"
+      data-testid="Map"
       style={{
         backgroundColor: colors[preferences.visualMode].seaColor,
       }}
     >
       <ComposableMap>
         <ZoomableGroup zoom={1}>
-          <Geographies geography={WorldGeography}>
+          <Geographies geography={props.geography}>
             {({ geographies }) =>
               geographies.map((geography) => (
                 <Geography
@@ -71,4 +74,4 @@ function WorldMap() {
   );
 }
 
-export default WorldMap;
+export default Map;
