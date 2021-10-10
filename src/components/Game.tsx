@@ -31,14 +31,24 @@ function Game() {
   function startGame(): () => void {
     return () => setIsPlayingGame(true);
   }
-  function onSelectMap(event: SelectChangeEvent<Maps>): () => void {
+  function onCloseDialog(reason: "backdropClick" | "escapeKeyDown"): void {
+    if (reason !== "backdropClick") {
+      startGame();
+    }
+  }
+  function onSelectMap(event: SelectChangeEvent<Maps>): void {
     // @ts-expect-error autofill of arbitrary value is not handled
-    return () => setMapSelection(event.target.value);
+    setMapSelection(event.target.value);
   }
 
   return (
     <div>
-      <Dialog maxWidth="lg" open={!isPlayingGame} onClose={startGame()} disableEscapeKeyDown>
+      <Dialog
+        maxWidth="lg"
+        open={!isPlayingGame}
+        onClose={(_, reason) => onCloseDialog(reason)}
+        disableEscapeKeyDown
+      >
         <DialogTitle>Countryguesser</DialogTitle>
         <DialogContent>
           <DialogContentText>Select the map you want to play</DialogContentText>
