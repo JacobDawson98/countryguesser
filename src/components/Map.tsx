@@ -18,7 +18,7 @@ function getGeographyTestId(rsmKey: number): string {
 }
 
 function geoRsmKeyToRsmKey(geoRsmKey: string): number {
-  return parseInt(geoRsmKey.substring(geoRsmKey.indexOf("-") + 1));
+  return parseInt(geoRsmKey.substring(geoRsmKey.indexOf("-") + 1), 10);
 }
 
 function Map(props: WorldMapProps) {
