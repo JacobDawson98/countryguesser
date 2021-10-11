@@ -1,5 +1,5 @@
 import { SelectChangeEvent } from "@mui/material/Select/SelectInput";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Geography, { Country } from "../geography/Geography";
 import WorldMapGeography from "../geography/WorldMapGeography";
 import StartGameDialog from "./dialogs/StartGameDialog";
@@ -30,7 +30,7 @@ function Game() {
     setCountryToGuess(DUMMY_COUNTRY);
   }
 
-  function startGame(): () => void {
+  const startGame: () => () => void = useCallback(() => {
     return () => {
       randomizedCountries =
         mapsToGeography[mapSelection].getRandomizedCountries();
@@ -42,23 +42,23 @@ function Game() {
       }
       setIsPlayingGame(true);
     };
-  }
+  }, [mapSelection]);
 
-  function onCloseDialog(
-    _: any,
-    reason: "backdropClick" | "escapeKeyDown"
-  ): void {
-    if (reason !== "backdropClick") {
-      startGame();
-    }
-  }
+  const onCloseDialog = useCallback(
+    (_: any, reason: "backdropClick" | "escapeKeyDown") => {
+      if (reason !== "backdropClick") {
+        startGame();
+      }
+    },
+    [startGame]
+  );
 
-  function onSelectMap(event: SelectChangeEvent<Maps>): void {
+  const onSelectMap = useCallback((event: SelectChangeEvent<Maps>) => {
     //@ts-expect-error autofill of arbitrary value is not handled
     setMapSelection(event.target.value);
-  }
+  }, []);
 
-  function moveOntoNextCountryToGuess(): void {
+  const moveOntoNextCountryToGuess = useCallback(() => {
     numMisses = 0;
     const nextCountryToGuess = randomizedCountries.pop();
     if (!nextCountryToGuess) {
@@ -69,25 +69,28 @@ function Game() {
     }
     console.log("Next country to guess:", nextCountryToGuess.name);
     setCountryToGuess(nextCountryToGuess);
-  }
+  }, []);
 
-  function makeGuess(rsmKey: number): void {
-    setSelectedCountryRsmKey(rsmKey);
-    const isCorrectGuess = rsmKey === countryToGuess.rsmKey;
-    if (isCorrectGuess) {
-      moveOntoNextCountryToGuess();
-    } else {
-      console.log("Wrong guess!");
-      numMisses += 1;
-      console.log("numMisses", numMisses);
-      if (numMisses >= MAX_MISSES) {
-        numMisses = 0;
-        resetGame();
-        setIsPlayingGame(false);
-        console.log("You lost!");
+  const makeGuess = useCallback(
+    (rsmKey: number) => {
+      setSelectedCountryRsmKey(rsmKey);
+      const isCorrectGuess = rsmKey === countryToGuess.rsmKey;
+      if (isCorrectGuess) {
+        moveOntoNextCountryToGuess();
+      } else {
+        console.log("Wrong guess!");
+        numMisses += 1;
+        console.log("numMisses", numMisses);
+        if (numMisses >= MAX_MISSES) {
+          numMisses = 0;
+          resetGame();
+          setIsPlayingGame(false);
+          console.log("You lost!");
+        }
       }
-    }
-  }
+    },
+    [countryToGuess.rsmKey, moveOntoNextCountryToGuess]
+  );
 
   return (
     <div>
