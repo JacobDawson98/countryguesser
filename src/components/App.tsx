@@ -1,9 +1,9 @@
-import WorldMap from './WorldMap';
+import Game from './Game';
 
 function App() {
   return (
     <div className="App">
-      <WorldMap />
+      <Game />
     </div>
   );
 }
