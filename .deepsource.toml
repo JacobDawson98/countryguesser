@@ -1,7 +1,5 @@
 version = 1
 
-test_patterns = ["**/__tests__"]
-
 exclude_patterns = [
     "yarn.lock",
     "*.json"
