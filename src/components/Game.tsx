@@ -55,7 +55,7 @@ function Game() {
     }
   }
 
-  function onCloseDialog(reason: "backdropClick" | "escapeKeyDown"): void {
+  function onCloseDialog(_: any, reason: "backdropClick" | "escapeKeyDown"): void {
     if (reason !== "backdropClick") {
       startGame();
     }
@@ -102,7 +102,7 @@ function Game() {
       <Dialog
         maxWidth="lg"
         open={!isPlayingGame}
-        onClose={(_, reason) => onCloseDialog(reason)}
+        onClose={onCloseDialog}
         disableEscapeKeyDown
       >
         <DialogTitle>Countryguesser</DialogTitle>
@@ -123,7 +123,7 @@ function Game() {
               <Select
                 autoFocus
                 value={mapSelection}
-                onChange={(event) => onSelectMap(event)}
+                onChange={onSelectMap}
                 label="Map"
                 inputProps={{
                   name: "map",
@@ -142,7 +142,7 @@ function Game() {
       <Map
         geography={mapsToGeography[mapSelection].geography}
         selectedCountry={selectedCountryRsmKey}
-        setSelectedCountryRsmKey={(rsmKey: number) => makeGuess(rsmKey)}
+        setSelectedCountryRsmKey={makeGuess}
       />
     </div>
   );
