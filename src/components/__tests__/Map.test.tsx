@@ -6,8 +6,8 @@ describe("Map", () => {
   it("should render the world map when given the world map", () => {
     const rendered = render(
       <Map
-        geography={mapsToGeography["WorldMap"]}
-        selectedCountry=""
+        geography={mapsToGeography["WorldMap"].geography}
+        selectedCountry={125}
         setSelectedCountryRsmKey={jest.fn()}
       />
     );

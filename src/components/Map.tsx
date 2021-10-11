@@ -9,22 +9,26 @@ import { preferences } from "../common/constants/globals";
 
 interface WorldMapProps {
   geography: string | Record<string, any> | string[] | undefined;
-  selectedCountry: string;
-  setSelectedCountryRsmKey: (rsmKey: string) => void;
+  selectedCountry: number;
+  setSelectedCountryRsmKey: (rsmKey: number) => void;
 }
 
-function getGeographyTestId(rsmKey: string): string {
+function getGeographyTestId(rsmKey: number): string {
   return `country-${rsmKey}`;
 }
 
+function geoRsmKeyToRsmKey(geoRsmKey: string): number {
+  return parseInt(geoRsmKey.substring(geoRsmKey.indexOf("-") + 1));
+}
+
 function Map(props: WorldMapProps) {
-  function getGeographyFill(rsmKey: string): string {
+  function getGeographyFill(rsmKey: number): string {
     return props.selectedCountry === rsmKey
       ? colors[preferences.visualMode].countryPressedFill
       : colors[preferences.visualMode].countryDefaultFill;
   }
 
-  function getGeographyHoverFill(rsmKey: string): string {
+  function getGeographyHoverFill(rsmKey: number): string {
     return props.selectedCountry === rsmKey
       ? colors[preferences.visualMode].countryPressedFill
       : colors[preferences.visualMode].countryHoverFill;
@@ -41,30 +45,35 @@ function Map(props: WorldMapProps) {
         <ZoomableGroup zoom={1}>
           <Geographies geography={props.geography}>
             {({ geographies }) =>
-              geographies.map((geography) => (
-                <Geography
-                  data-testid={getGeographyTestId(geography.rsmKey)}
-                  key={geography.rsmKey}
-                  geography={geography}
-                  fill={getGeographyFill(geography.rsmKey)}
-                  stroke={colors[preferences.visualMode].countryOutline}
-                  strokeWidth="0.3"
-                  onClick={() => props.setSelectedCountryRsmKey(geography.rsmKey)}
-                  style={{
-                    default: {
-                      outline: "none",
-                    },
-                    hover: {
-                      fill: getGeographyHoverFill(geography.rsmKey),
-                      outline: "none",
-                    },
-                    pressed: {
-                      fill: colors[preferences.visualMode].countryPressedFill,
-                      outline: "none",
-                    },
-                  }}
-                />
-              ))
+              geographies.map((geography) => {
+                const rsmKey = geoRsmKeyToRsmKey(geography.rsmKey);
+                return (
+                  <Geography
+                    data-testid={getGeographyTestId(rsmKey)}
+                    key={geography.rsmKey}
+                    geography={geography}
+                    fill={getGeographyFill(rsmKey)}
+                    stroke={colors[preferences.visualMode].countryOutline}
+                    strokeWidth="0.3"
+                    onClick={() =>
+                      props.setSelectedCountryRsmKey(rsmKey)
+                    }
+                    style={{
+                      default: {
+                        outline: "none",
+                      },
+                      hover: {
+                        fill: getGeographyHoverFill(rsmKey),
+                        outline: "none",
+                      },
+                      pressed: {
+                        fill: colors[preferences.visualMode].countryPressedFill,
+                        outline: "none",
+                      },
+                    }}
+                  />
+                );
+              })
             }
           </Geographies>
         </ZoomableGroup>

@@ -1,5 +1,6 @@
 import { useState } from "react";
-import WorldGeography from "../assets/world-110m.json";
+import Geography, { Country } from '../geography/Geography';
+import WorldMapGeography from '../geography/WorldMapGeography';
 import Map from "./Map";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -19,26 +20,80 @@ enum Maps {
 
 export const mapsToGeography: Record<
   Maps,
-  string | Record<string, any> | string[] | undefined
+  Geography
 > = {
-  WorldMap: WorldGeography,
+  WorldMap: WorldMapGeography,
 };
+
+const MAX_MISSES = 3;
+let numMisses = 0;
+let randomizedCountries: Country[] = [];
 
 function Game() {
   const [mapSelection, setMapSelection] = useState<Maps>(Maps.WorldMap);
-  const [selectedCountryRsmKey, setSelectedCountryRsmKey] = useState("");
+  const [selectedCountryRsmKey, setSelectedCountryRsmKey] = useState(-1);
   const [isPlayingGame, setIsPlayingGame] = useState(false);
-  function startGame(): () => void {
-    return () => setIsPlayingGame(true);
+  const [countryToGuess, setCountryToGuess] = useState<Country>({ name: "", rsmKey: -1 });
+
+  function resetGame(): void {
+    numMisses = 0;
+    setSelectedCountryRsmKey(-1);
   }
+
+  function startGame(): () => void {
+    return () => {
+      randomizedCountries = mapsToGeography[mapSelection].getRandomizedCountries();
+      const countryToGuess = randomizedCountries.pop();
+      if (countryToGuess) {
+        resetGame();
+        setCountryToGuess(countryToGuess);
+        console.log("Next country to guess:", countryToGuess.name);
+      }
+      setIsPlayingGame(true);
+    }
+  }
+
   function onCloseDialog(reason: "backdropClick" | "escapeKeyDown"): void {
     if (reason !== "backdropClick") {
       startGame();
     }
   }
+
   function onSelectMap(event: SelectChangeEvent<Maps>): void {
-    // @ts-expect-error autofill of arbitrary value is not handled
+    //@ts-expect-error autofill of arbitrary value is not handled
     setMapSelection(event.target.value);
+  }
+
+  function moveOntoNextCountryToGuess(): void {
+    numMisses = 0;
+    const nextCountryToGuess = randomizedCountries.pop();
+    console.log('nextCountryToGuess', nextCountryToGuess);
+    if (!nextCountryToGuess) {
+      resetGame();
+      setIsPlayingGame(false);
+      console.log("Winner!!!");
+      return;
+    }
+    setCountryToGuess(nextCountryToGuess);
+    console.log("Next country to guess:", nextCountryToGuess.name);
+  }
+
+  function makeGuess(rsmKey: number): void {
+    setSelectedCountryRsmKey(rsmKey);
+    const isCorrectGuess = rsmKey === countryToGuess.rsmKey;
+    if (isCorrectGuess) {
+      moveOntoNextCountryToGuess();
+    } else {
+      console.log("Wrong guess!");
+      numMisses += 1;
+      console.log("numMisses", numMisses);
+      if (numMisses >= MAX_MISSES) {
+        numMisses = 0;
+        resetGame();
+        setIsPlayingGame(false);
+        console.log("You lost!");
+      }
+    }
   }
 
   return (
@@ -84,11 +139,9 @@ function Game() {
         </DialogActions>
       </Dialog>
       <Map
-        geography={mapsToGeography[mapSelection]}
+        geography={mapsToGeography[mapSelection].geography}
         selectedCountry={selectedCountryRsmKey}
-        setSelectedCountryRsmKey={(rsmKey: string) =>
-          setSelectedCountryRsmKey(rsmKey)
-        }
+        setSelectedCountryRsmKey={(rsmKey: number) => makeGuess(rsmKey)}
       />
     </div>
   );
