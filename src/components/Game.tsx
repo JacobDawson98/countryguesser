@@ -45,7 +45,7 @@ function Game() {
   }, [mapSelection]);
 
   const onCloseDialog = useCallback(
-    (_: object, reason: "backdropClick" | "escapeKeyDown") => {
+    (_: Record<string, unknown>, reason: "backdropClick" | "escapeKeyDown") => {
       if (reason !== "backdropClick") {
         startGame();
       }

@@ -13,7 +13,10 @@ import { Maps } from "../Game";
 
 interface StartGameDialogProps {
   isPlayingGame: boolean;
-  onCloseDialog: (_: object, reason: "backdropClick" | "escapeKeyDown") => void;
+  onCloseDialog: (
+    _: Record<string, unknown>,
+    reason: "backdropClick" | "escapeKeyDown"
+  ) => void;
   mapSelection: Maps;
   onSelectMap: (event: SelectChangeEvent<Maps>) => void;
   startGame: () => () => void;
