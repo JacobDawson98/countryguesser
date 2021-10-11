@@ -1,27 +1,15 @@
-import { useState } from "react";
-import Geography, { Country } from '../geography/Geography';
-import WorldMapGeography from '../geography/WorldMapGeography';
+import { SelectChangeEvent } from "@mui/material/Select/SelectInput";
+import { useCallback, useState } from "react";
+import Geography, { Country } from "../geography/Geography";
+import WorldMapGeography from "../geography/WorldMapGeography";
+import StartGameDialog from "./dialogs/StartGameDialog";
 import Map from "./Map";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContentText from "@mui/material/DialogContentText";
-import Button from "@mui/material/Button";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
-import MenuItem from "@mui/material/MenuItem";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import Box from "@mui/system/Box";
 
-enum Maps {
+export enum Maps {
   WorldMap = "WorldMap",
 }
 
-export const mapsToGeography: Record<
-  Maps,
-  Geography
-> = {
+export const mapsToGeography: Record<Maps, Geography> = {
   WorldMap: WorldMapGeography,
 };
 
@@ -42,9 +30,10 @@ function Game() {
     setCountryToGuess(DUMMY_COUNTRY);
   }
 
-  function startGame(): () => void {
+  const startGame: () => () => void = useCallback(() => {
     return () => {
-      randomizedCountries = mapsToGeography[mapSelection].getRandomizedCountries();
+      randomizedCountries =
+        mapsToGeography[mapSelection].getRandomizedCountries();
       const countryToGuess = randomizedCountries.pop();
       if (countryToGuess) {
         resetGame();
@@ -52,21 +41,24 @@ function Game() {
         console.log("Next country to guess:", countryToGuess.name);
       }
       setIsPlayingGame(true);
-    }
-  }
+    };
+  }, [mapSelection]);
 
-  function onCloseDialog(reason: "backdropClick" | "escapeKeyDown"): void {
-    if (reason !== "backdropClick") {
-      startGame();
-    }
-  }
+  const onCloseDialog = useCallback(
+    (_: Record<string, unknown>, reason: "backdropClick" | "escapeKeyDown") => {
+      if (reason !== "backdropClick") {
+        startGame();
+      }
+    },
+    [startGame]
+  );
 
-  function onSelectMap(event: SelectChangeEvent<Maps>): void {
+  const onSelectMap = useCallback((event: SelectChangeEvent<Maps>) => {
     //@ts-expect-error autofill of arbitrary value is not handled
     setMapSelection(event.target.value);
-  }
+  }, []);
 
-  function moveOntoNextCountryToGuess(): void {
+  const moveOntoNextCountryToGuess = useCallback(() => {
     numMisses = 0;
     const nextCountryToGuess = randomizedCountries.pop();
     if (!nextCountryToGuess) {
@@ -77,72 +69,42 @@ function Game() {
     }
     console.log("Next country to guess:", nextCountryToGuess.name);
     setCountryToGuess(nextCountryToGuess);
-  }
+  }, []);
 
-  function makeGuess(rsmKey: number): void {
-    setSelectedCountryRsmKey(rsmKey);
-    const isCorrectGuess = rsmKey === countryToGuess.rsmKey;
-    if (isCorrectGuess) {
-      moveOntoNextCountryToGuess();
-    } else {
-      console.log("Wrong guess!");
-      numMisses += 1;
-      console.log("numMisses", numMisses);
-      if (numMisses >= MAX_MISSES) {
-        numMisses = 0;
-        resetGame();
-        setIsPlayingGame(false);
-        console.log("You lost!");
+  const makeGuess = useCallback(
+    (rsmKey: number) => {
+      setSelectedCountryRsmKey(rsmKey);
+      const isCorrectGuess = rsmKey === countryToGuess.rsmKey;
+      if (isCorrectGuess) {
+        moveOntoNextCountryToGuess();
+      } else {
+        console.log("Wrong guess!");
+        numMisses += 1;
+        console.log("numMisses", numMisses);
+        if (numMisses >= MAX_MISSES) {
+          numMisses = 0;
+          resetGame();
+          setIsPlayingGame(false);
+          console.log("You lost!");
+        }
       }
-    }
-  }
+    },
+    [countryToGuess.rsmKey, moveOntoNextCountryToGuess]
+  );
 
   return (
     <div>
-      <Dialog
-        maxWidth="lg"
-        open={!isPlayingGame}
-        onClose={(_, reason) => onCloseDialog(reason)}
-        disableEscapeKeyDown
-      >
-        <DialogTitle>Countryguesser</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Select the map you want to play</DialogContentText>
-          <Box
-            noValidate
-            component="form"
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              m: "auto",
-              width: "fit-content",
-            }}
-          >
-            <FormControl sx={{ mt: 4 }}>
-              <InputLabel htmlFor="map">Map</InputLabel>
-              <Select
-                autoFocus
-                value={mapSelection}
-                onChange={(event) => onSelectMap(event)}
-                label="Map"
-                inputProps={{
-                  name: "map",
-                  id: "map",
-                }}
-              >
-                <MenuItem value={Maps.WorldMap}>World Map</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={startGame()}>Start Game</Button>
-        </DialogActions>
-      </Dialog>
+      <StartGameDialog
+        isPlayingGame={isPlayingGame}
+        onCloseDialog={onCloseDialog}
+        mapSelection={mapSelection}
+        onSelectMap={onSelectMap}
+        startGame={startGame}
+      />
       <Map
         geography={mapsToGeography[mapSelection].geography}
         selectedCountry={selectedCountryRsmKey}
-        setSelectedCountryRsmKey={(rsmKey: number) => makeGuess(rsmKey)}
+        setSelectedCountryRsmKey={makeGuess}
       />
     </div>
   );
