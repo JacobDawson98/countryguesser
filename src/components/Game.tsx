@@ -26,6 +26,7 @@ export const mapsToGeography: Record<
 };
 
 const MAX_MISSES = 3;
+const DUMMY_COUNTRY: Country = { name: "", rsmKey: -1 };
 let numMisses = 0;
 let randomizedCountries: Country[] = [];
 
@@ -33,11 +34,12 @@ function Game() {
   const [mapSelection, setMapSelection] = useState<Maps>(Maps.WorldMap);
   const [selectedCountryRsmKey, setSelectedCountryRsmKey] = useState(-1);
   const [isPlayingGame, setIsPlayingGame] = useState(false);
-  const [countryToGuess, setCountryToGuess] = useState<Country>({ name: "", rsmKey: -1 });
+  const [countryToGuess, setCountryToGuess] = useState<Country>(DUMMY_COUNTRY);
 
   function resetGame(): void {
     numMisses = 0;
     setSelectedCountryRsmKey(-1);
+    setCountryToGuess(DUMMY_COUNTRY);
   }
 
   function startGame(): () => void {
@@ -67,15 +69,14 @@ function Game() {
   function moveOntoNextCountryToGuess(): void {
     numMisses = 0;
     const nextCountryToGuess = randomizedCountries.pop();
-    console.log('nextCountryToGuess', nextCountryToGuess);
     if (!nextCountryToGuess) {
       resetGame();
       setIsPlayingGame(false);
       console.log("Winner!!!");
       return;
     }
-    setCountryToGuess(nextCountryToGuess);
     console.log("Next country to guess:", nextCountryToGuess.name);
+    setCountryToGuess(nextCountryToGuess);
   }
 
   function makeGuess(rsmKey: number): void {
