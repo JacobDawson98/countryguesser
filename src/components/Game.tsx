@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 import Geography, { Country } from "../geography/Geography";
 import WorldMapGeography from "../geography/WorldMapGeography";
 import StartGameDialog from "./dialogs/StartGameDialog";
+import GameStatus from "./GameStatus";
 import Map from "./Map";
 
 export enum Maps {
@@ -38,7 +39,6 @@ function Game() {
       if (countryToGuess) {
         resetGame();
         setCountryToGuess(countryToGuess);
-        console.log("Next country to guess:", countryToGuess.name);
       }
       setIsPlayingGame(true);
     };
@@ -64,10 +64,8 @@ function Game() {
     if (!nextCountryToGuess) {
       resetGame();
       setIsPlayingGame(false);
-      console.log("Winner!!!");
       return;
     }
-    console.log("Next country to guess:", nextCountryToGuess.name);
     setCountryToGuess(nextCountryToGuess);
   }, []);
 
@@ -78,14 +76,12 @@ function Game() {
       if (isCorrectGuess) {
         moveOntoNextCountryToGuess();
       } else {
-        console.log("Wrong guess!");
         numMisses += 1;
         console.log("numMisses", numMisses);
         if (numMisses >= MAX_MISSES) {
           numMisses = 0;
           resetGame();
           setIsPlayingGame(false);
-          console.log("You lost!");
         }
       }
     },
@@ -94,6 +90,11 @@ function Game() {
 
   return (
     <div>
+      <GameStatus
+        isPlayingGame={isPlayingGame}
+        currentCountry={countryToGuess.name}
+        numMisses={numMisses}
+      />
       <StartGameDialog
         isPlayingGame={isPlayingGame}
         onCloseDialog={onCloseDialog}
