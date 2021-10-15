@@ -38,7 +38,7 @@ describe("StartGameDialog", () => {
     });
 
     it("should start the game if the start game button has been clicked", () => {
-      const startGameButton = instance.queryByText("Start Game"); 
+      const startGameButton = instance.queryByText("Start Game");
       startGameButton?.click();
 
       expect(startGameMock).toBeCalledTimes(1);
