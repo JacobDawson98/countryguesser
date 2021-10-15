@@ -12,12 +12,22 @@ interface GameStatusProps {
   visualMode: VisualMode;
 }
 
+function getStatus(currentCountry: string, numMisses: number): string {
+  const countryToGuessStatus = `Country to guess: ${currentCountry}`;
+  return numMisses > 0
+    ? countryToGuessStatus + `. Misses: ${numMisses}`
+    : countryToGuessStatus;
+}
+
 function GameStatus(props: GameStatusProps) {
-  const { visualMode, currentCountry, isPlayingGame } = props;
+  const { visualMode, currentCountry, isPlayingGame, numMisses } = props;
 
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ backgroundColor: colors[visualMode].seaColor }}>
+      <AppBar
+        position="static"
+        sx={{ backgroundColor: colors[visualMode].seaColor }}
+      >
         <Toolbar>
           {isPlayingGame && (
             <Typography
@@ -25,7 +35,7 @@ function GameStatus(props: GameStatusProps) {
               component="div"
               sx={{ flexGrow: 1, textAlign: "center" }}
             >
-              Country to guess: {currentCountry}
+              {getStatus(currentCountry, numMisses)}
             </Typography>
           )}
         </Toolbar>
