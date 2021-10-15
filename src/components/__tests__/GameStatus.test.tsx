@@ -21,7 +21,7 @@ describe('GameStatus', () => {
 
     const rendered = render(
       <GameStatus
-      isPlayingGame={true}
+      isPlayingGame
       currentCountry={currentCountry}
       numMisses={1}
       visualMode={VisualMode.dark}
