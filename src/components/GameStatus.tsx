@@ -2,28 +2,34 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
+import { colors } from "../common/constants/colors";
+import { VisualMode } from "../common/constants/globals";
 
 interface GameStatusProps {
   isPlayingGame: boolean;
   currentCountry: string;
   numMisses: number;
+  visualMode: VisualMode;
 }
 
 function GameStatus(props: GameStatusProps) {
-  if (props.isPlayingGame) {
-    return (
-      <Box sx={{ flexGrow: 1 }}>
-        <AppBar position="static">
-          <Toolbar>
-            <Typography variant="h6" component="span" sx={{ flexGrow: 1 }}>
-              Country to guess {props.currentCountry}
+  return (
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position="static" sx={{ backgroundColor: colors[props.visualMode].seaColor }}>
+        <Toolbar>
+          {props.isPlayingGame && (
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ flexGrow: 1, textAlign: "center" }}
+            >
+              Country to guess: {props.currentCountry}
             </Typography>
-          </Toolbar>
-        </AppBar>
-      </Box>
-    );
-  }
-  return <></>;
+          )}
+        </Toolbar>
+      </AppBar>
+    </Box>
+  );
 }
 
 export default GameStatus;

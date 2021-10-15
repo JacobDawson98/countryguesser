@@ -1,5 +1,6 @@
 import { SelectChangeEvent } from "@mui/material/Select/SelectInput";
 import { useCallback, useState } from "react";
+import { preferences } from "../common/constants/globals";
 import Geography, { Country } from "../geography/Geography";
 import WorldMapGeography from "../geography/WorldMapGeography";
 import StartGameDialog from "./dialogs/StartGameDialog";
@@ -66,6 +67,7 @@ function Game() {
       setIsPlayingGame(false);
       return;
     }
+    setSelectedCountryRsmKey(-1);
     setCountryToGuess(nextCountryToGuess);
   }, []);
 
@@ -77,7 +79,6 @@ function Game() {
         moveOntoNextCountryToGuess();
       } else {
         numMisses += 1;
-        console.log("numMisses", numMisses);
         if (numMisses >= MAX_MISSES) {
           numMisses = 0;
           resetGame();
@@ -89,11 +90,12 @@ function Game() {
   );
 
   return (
-    <div>
+    <>
       <GameStatus
         isPlayingGame={isPlayingGame}
         currentCountry={countryToGuess.name}
         numMisses={numMisses}
+        visualMode={preferences.visualMode}
       />
       <StartGameDialog
         isPlayingGame={isPlayingGame}
@@ -106,8 +108,9 @@ function Game() {
         geography={mapsToGeography[mapSelection].geography}
         selectedCountry={selectedCountryRsmKey}
         setSelectedCountryRsmKey={makeGuess}
+        visualMode={preferences.visualMode}
       />
-    </div>
+    </>
   );
 }
 
