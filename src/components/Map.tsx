@@ -23,28 +23,30 @@ function geoRsmKeyToRsmKey(geoRsmKey: string): number {
 }
 
 function Map(props: WorldMapProps) {
+  const { visualMode, geography, selectedCountry, setSelectedCountryRsmKey } = props;
+
   function getGeographyFill(rsmKey: number): string {
-    return props.selectedCountry === rsmKey
-      ? colors[props.visualMode].countryPressedFill
-      : colors[props.visualMode].countryDefaultFill;
+    return selectedCountry === rsmKey
+      ? colors[visualMode].countryPressedFill
+      : colors[visualMode].countryDefaultFill;
   }
 
   function getGeographyHoverFill(rsmKey: number): string {
-    return props.selectedCountry === rsmKey
-      ? colors[props.visualMode].countryPressedFill
-      : colors[props.visualMode].countryHoverFill;
+    return selectedCountry === rsmKey
+      ? colors[visualMode].countryPressedFill
+      : colors[visualMode].countryHoverFill;
   }
 
   return (
     <div
       data-testid="Map"
       style={{
-        backgroundColor: colors[props.visualMode].seaColor,
+        backgroundColor: colors[visualMode].seaColor,
       }}
     >
       <ComposableMap>
         <ZoomableGroup zoom={1}>
-          <Geographies geography={props.geography}>
+          <Geographies geography={geography}>
             {({ geographies }) =>
               geographies.map((geography) => {
                 const rsmKey = geoRsmKeyToRsmKey(geography.rsmKey);
@@ -57,7 +59,7 @@ function Map(props: WorldMapProps) {
                     stroke={colors[props.visualMode].countryOutline}
                     strokeWidth="0.3"
                     onClick={() =>
-                      props.setSelectedCountryRsmKey(rsmKey)
+                      setSelectedCountryRsmKey(rsmKey)
                     }
                     style={{
                       default: {
@@ -68,7 +70,7 @@ function Map(props: WorldMapProps) {
                         outline: "none",
                       },
                       pressed: {
-                        fill: colors[props.visualMode].countryPressedFill,
+                        fill: colors[visualMode].countryPressedFill,
                         outline: "none",
                       },
                     }}

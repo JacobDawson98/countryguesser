@@ -13,17 +13,19 @@ interface GameStatusProps {
 }
 
 function GameStatus(props: GameStatusProps) {
+  const { visualMode, currentCountry, isPlayingGame } = props;
+
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ backgroundColor: colors[props.visualMode].seaColor }}>
+      <AppBar position="static" sx={{ backgroundColor: colors[visualMode].seaColor }}>
         <Toolbar>
-          {props.isPlayingGame && (
+          {isPlayingGame && (
             <Typography
               variant="h6"
               component="div"
               sx={{ flexGrow: 1, textAlign: "center" }}
             >
-              Country to guess: {props.currentCountry}
+              Country to guess: {currentCountry}
             </Typography>
           )}
         </Toolbar>
