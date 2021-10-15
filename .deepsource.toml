@@ -5,6 +5,11 @@ exclude_patterns = [
     "*.json"
 ]
 
+test_patterns = [
+  "*.test.ts",
+  "*.test.tsx"
+]
+
 [[analyzers]]
 name = "javascript"
 enabled = true
