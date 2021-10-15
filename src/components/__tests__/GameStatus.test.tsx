@@ -13,10 +13,10 @@ describe('GameStatus', () => {
       numMisses={1}
       visualMode={VisualMode.dark}
       />
-    ); 
+    );
 
     expect(rendered.queryByText(`Country to guess: ${currentCountry}`)).toBeFalsy();
-  });   
+  });
 
   it("should show the next country to guess if the game is being played", () => {
     const rendered = render(
@@ -26,10 +26,10 @@ describe('GameStatus', () => {
       numMisses={0}
       visualMode={VisualMode.dark}
       />
-    ); 
+    );
 
     expect(rendered.queryByText(`Country to guess: ${currentCountry}`)).toBeVisible();
-  });   
+  });
 
   it("should show the next country to guess if the game is being played and the number of misses", () => {
     const rendered = render(
@@ -39,8 +39,8 @@ describe('GameStatus', () => {
       numMisses={2}
       visualMode={VisualMode.dark}
       />
-    ); 
+    );
 
     expect(rendered.queryByText(`Country to guess: ${currentCountry}. Misses: 2`)).toBeVisible();
-  });   
+  });
 });
