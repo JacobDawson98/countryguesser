@@ -1,4 +1,5 @@
 import { render } from "@testing-library/react";
+import { VisualMode } from "../../common/constants/globals";
 import { mapsToGeography } from "../Game";
 import Map from "../Map";
 
@@ -9,6 +10,7 @@ describe("Map", () => {
         geography={mapsToGeography["WorldMap"].geography}
         selectedCountry={125}
         setSelectedCountryRsmKey={jest.fn()}
+        visualMode={VisualMode.dark}
       />
     );
     const worldMap = rendered.getByTestId("Map");
