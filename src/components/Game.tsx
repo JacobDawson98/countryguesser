@@ -105,7 +105,7 @@ function Game() {
         startGame={startGame}
       />
       <Map
-        geography={mapsToGeography[mapSelection].geography}
+        geography={mapsToGeography[mapSelection]}
         selectedCountry={selectedCountryRsmKey}
         setSelectedCountryRsmKey={makeGuess}
         visualMode={preferences.visualMode}

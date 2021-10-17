@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   ComposableMap,
   Geographies,
@@ -6,9 +7,10 @@ import {
 } from "react-simple-maps";
 import { colors } from "../common/constants/colors";
 import { VisualMode } from "../common/constants/globals";
+import CGGeography from "../geography/Geography";
 
 interface WorldMapProps {
-  geography: string | Record<string, any> | string[] | undefined;
+  geography: CGGeography;
   selectedCountry: number;
   setSelectedCountryRsmKey: (rsmKey: number) => void;
   visualMode: VisualMode;
@@ -23,7 +25,23 @@ function geoRsmKeyToRsmKey(geoRsmKey: string): number {
 }
 
 function Map(props: WorldMapProps) {
-  const { visualMode, geography, selectedCountry, setSelectedCountryRsmKey } = props;
+  const { visualMode, geography, selectedCountry, setSelectedCountryRsmKey } =
+    props;
+  const [resolvedGeography, setResolvedGeography] =
+    useState<string | Record<string, any> | string[] | undefined>(undefined);
+
+  useEffect(() => {
+    async function loadGeography() {
+      console.log('begin loadGeography', geography.geography)
+      if (!geography.geography || Object.keys(geography.geography).length === 0) {
+        await geography.resolveImport();
+        setResolvedGeography(geography.geography);
+        console.log('setResolvedGeography');
+      }
+    }
+    loadGeography();
+    console.log('useEffect called loadGeography')
+  });
 
   function getGeographyFill(rsmKey: number): string {
     return selectedCountry === rsmKey
@@ -46,7 +64,7 @@ function Map(props: WorldMapProps) {
     >
       <ComposableMap>
         <ZoomableGroup zoom={1}>
-          <Geographies geography={geography}>
+          <Geographies geography={resolvedGeography}>
             {({ geographies }) =>
               geographies.map((geography) => {
                 const rsmKey = geoRsmKeyToRsmKey(geography.rsmKey);
@@ -58,9 +76,7 @@ function Map(props: WorldMapProps) {
                     fill={getGeographyFill(rsmKey)}
                     stroke={colors[props.visualMode].countryOutline}
                     strokeWidth="0.3"
-                    onClick={() =>
-                      setSelectedCountryRsmKey(rsmKey)
-                    }
+                    onClick={() => setSelectedCountryRsmKey(rsmKey)}
                     style={{
                       default: {
                         outline: "none",
