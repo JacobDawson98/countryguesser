@@ -4,8 +4,13 @@ export interface Country {
 }
 
 export default abstract class Geography {
+  abstract geography: string | Record<string, any> | string[] | undefined;
   constructor(
-    public geography: string | Record<string, any> | string[] | undefined
+    public geographyImport: Promise<
+      string | Record<string, any> | string[] | undefined
+    >
   ) {}
   abstract getRandomizedCountries(): Country[];
+
+  abstract resolveImport(): Promise<void>;
 }
