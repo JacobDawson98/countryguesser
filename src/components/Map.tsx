@@ -6,6 +6,7 @@ import {
 } from "react-simple-maps";
 import { colors } from "../common/constants/colors";
 import { VisualMode } from "../common/constants/globals";
+import "../styles/Map.css";
 
 interface WorldMapProps {
   geography: string | Record<string, any> | string[] | undefined;
@@ -23,7 +24,8 @@ function geoRsmKeyToRsmKey(geoRsmKey: string): number {
 }
 
 function Map(props: WorldMapProps) {
-  const { visualMode, geography, selectedCountry, setSelectedCountryRsmKey } = props;
+  const { visualMode, geography, selectedCountry, setSelectedCountryRsmKey } =
+    props;
 
   function getGeographyFill(rsmKey: number): string {
     return selectedCountry === rsmKey
@@ -40,53 +42,47 @@ function Map(props: WorldMapProps) {
   return (
     <div
       data-testid="Map"
+      className="map"
       style={{
         backgroundColor: colors[visualMode].seaColor,
-        position: 'fixed',
-        height: '100%',
-        width: '100%',
-        display: 'grid',
-        alignItems: 'center'
       }}
     >
       <div>
-      <ComposableMap>
-        <ZoomableGroup zoom={1}>
-          <Geographies geography={geography}>
-            {({ geographies }) =>
-              geographies.map((geography) => {
-                const rsmKey = geoRsmKeyToRsmKey(geography.rsmKey);
-                return (
-                  <Geography
-                    data-testid={getGeographyTestId(rsmKey)}
-                    key={geography.rsmKey}
-                    geography={geography}
-                    fill={getGeographyFill(rsmKey)}
-                    stroke={colors[props.visualMode].countryOutline}
-                    strokeWidth="0.3"
-                    onClick={() =>
-                      setSelectedCountryRsmKey(rsmKey)
-                    }
-                    style={{
-                      default: {
-                        outline: "none",
-                      },
-                      hover: {
-                        fill: getGeographyHoverFill(rsmKey),
-                        outline: "none",
-                      },
-                      pressed: {
-                        fill: colors[visualMode].countryPressedFill,
-                        outline: "none",
-                      },
-                    }}
-                  />
-                );
-              })
-            }
-          </Geographies>
-        </ZoomableGroup>
-      </ComposableMap>
+        <ComposableMap>
+          <ZoomableGroup zoom={1}>
+            <Geographies geography={geography}>
+              {({ geographies }) =>
+                geographies.map((geography) => {
+                  const rsmKey = geoRsmKeyToRsmKey(geography.rsmKey);
+                  return (
+                    <Geography
+                      data-testid={getGeographyTestId(rsmKey)}
+                      key={geography.rsmKey}
+                      geography={geography}
+                      fill={getGeographyFill(rsmKey)}
+                      stroke={colors[props.visualMode].countryOutline}
+                      strokeWidth="0.3"
+                      onClick={() => setSelectedCountryRsmKey(rsmKey)}
+                      style={{
+                        default: {
+                          outline: "none",
+                        },
+                        hover: {
+                          fill: getGeographyHoverFill(rsmKey),
+                          outline: "none",
+                        },
+                        pressed: {
+                          fill: colors[visualMode].countryPressedFill,
+                          outline: "none",
+                        },
+                      }}
+                    />
+                  );
+                })
+              }
+            </Geographies>
+          </ZoomableGroup>
+        </ComposableMap>
       </div>
     </div>
   );
