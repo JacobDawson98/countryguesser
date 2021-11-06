@@ -42,8 +42,14 @@ function Map(props: WorldMapProps) {
       data-testid="Map"
       style={{
         backgroundColor: colors[visualMode].seaColor,
+        position: 'fixed',
+        height: '100%',
+        width: '100%',
+        display: 'grid',
+        alignItems: 'center'
       }}
     >
+      <div>
       <ComposableMap>
         <ZoomableGroup zoom={1}>
           <Geographies geography={geography}>
@@ -81,6 +87,7 @@ function Map(props: WorldMapProps) {
           </Geographies>
         </ZoomableGroup>
       </ComposableMap>
+      </div>
     </div>
   );
 }
