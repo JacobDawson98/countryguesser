@@ -55,7 +55,10 @@ function Map(props: WorldMapProps) {
     >
       <div>
         <ComposableMap>
-          <ZoomableGroup {...mapZoomableGroupProps}>
+          <ZoomableGroup
+            zoom={mapZoomableGroupProps.zoom}
+            maxZoom={mapZoomableGroupProps.maxZoom}
+          >
             <Geographies geography={geography}>
               {({ geographies }) =>
                 geographies.map((geography) => {
