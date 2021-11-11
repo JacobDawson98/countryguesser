@@ -3,6 +3,7 @@ import {
   Geographies,
   Geography,
   ZoomableGroup,
+  ZoomableGroupProps,
 } from "react-simple-maps";
 import { colors } from "../common/constants/colors";
 import { VisualMode } from "../common/constants/globals";
@@ -22,6 +23,11 @@ function getGeographyTestId(rsmKey: number): string {
 function geoRsmKeyToRsmKey(geoRsmKey: string): number {
   return parseInt(geoRsmKey.substring(geoRsmKey.indexOf("-") + 1), 10);
 }
+
+export const mapZoomableGroupProps: ZoomableGroupProps = {
+  zoom: 1,
+  maxZoom: 20,
+};
 
 function Map(props: WorldMapProps) {
   const { visualMode, geography, selectedCountry, setSelectedCountryRsmKey } =
@@ -49,7 +55,10 @@ function Map(props: WorldMapProps) {
     >
       <div>
         <ComposableMap>
-          <ZoomableGroup zoom={1}>
+          <ZoomableGroup
+            zoom={mapZoomableGroupProps.zoom}
+            maxZoom={mapZoomableGroupProps.maxZoom}
+          >
             <Geographies geography={geography}>
               {({ geographies }) =>
                 geographies.map((geography) => {
